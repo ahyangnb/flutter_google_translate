@@ -34,7 +34,7 @@ LazyDatabase _openConnection() {
     // put the database file, called db.sqlite here, into the documents folder
     // for your app.
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'flutter_google_translate.sqlite'));
+    final file = File(p.join(dbFolder.path, 'flutter_google_translate_1.sqlite'));
 
     // Also work around limitations on old Android versions
     if (Platform.isAndroid) {

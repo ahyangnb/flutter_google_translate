@@ -1,11 +1,11 @@
 import 'package:flutter_google_translate/src/db/database.dart';
 
 class DbTranslateUtil {
-
   DbTranslateUtil();
+
   factory DbTranslateUtil.instance() => DbTranslateUtil();
 
-   final TranslateDbInstance db = TranslateDbInstance();
+  static final TranslateDbInstance db = TranslateDbInstance();
 
   Future<int> insertData({
     required String originContent,
@@ -25,6 +25,6 @@ class DbTranslateUtil {
     return (db.select(db.translateItems)
           ..where((t) => t.originContent.equals(originContent))
           ..where((t) => t.targetLanguage.equals(targetLanguage)))
-        .getSingle();
+        .getSingleOrNull();
   }
 }

@@ -59,20 +59,22 @@ class TranslateUtil extends TranslateDataManage {
   TranslationModel _detected =
       TranslationModel(translatedText: '', detectedSourceLanguage: '');
 
-  Future translateWithCache(String text, int messageId, {String? to}) async {
+  Future<String?> translateWithCache(String text, int messageId,
+      {String? to, bool cache = true}) async {
     String targetLanguage = to ?? Get.locale?.languageCode ?? 'en';
-    TranslateItem? translateItem =
-        await DbTranslateUtil.instance().getData(text, targetLanguage);
-    if (translateItem != null) {
-      setOk(
-        originContent: text,
-        result: translateItem.resultContent,
-        targetLanguage: targetLanguage,
-        messageId: messageId,
-      );
-      return;
+    if (cache) {
+      TranslateItem? translateItem =
+          await DbTranslateUtil.instance().getData(text, targetLanguage);
+      if (translateItem != null) {
+        setOk(
+          originContent: text,
+          result: translateItem.resultContent,
+          targetLanguage: targetLanguage,
+          messageId: messageId,
+        );
+        return null;
+      }
     }
-
     if (GetUtils.isNullOrBlank(apiKey)!) {
       throw TranslateException('Config error');
     }
@@ -103,7 +105,15 @@ class TranslateUtil extends TranslateDataManage {
       _detected = await _translation.detectLang(text: text);
       gLogger.d(
           '_translated::${_translated.translatedText}, _detected :${_detected.detectedSourceLanguage} ');
-      setOk(
+
+      /// Insert Data.
+      await DbTranslateUtil.instance().insertData(
+          originContent: text,
+          resultContent: _translated.translatedText,
+          targetLanguage: targetLanguage);
+
+      /// return and store data.
+      return setOk(
         originContent: text,
         result: _translated.translatedText,
         targetLanguage: targetLanguage,
@@ -143,7 +153,7 @@ class TranslateDataManage {
     translatingMap[messageId] = TranslateStatus.translating;
   }
 
-  void setOk({
+  String setOk({
     required String originContent,
     required String result,
     required String targetLanguage,
@@ -151,6 +161,7 @@ class TranslateDataManage {
   }) {
     translateResult[originContent] = {targetLanguage: result};
     translatingMap[messageId] = TranslateStatus.translated;
+    return result;
   }
 
   void setError(int messageId) {
