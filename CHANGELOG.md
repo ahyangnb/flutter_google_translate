@@ -1,3 +1,7 @@
+## [0.0.5]
+
+- Cache result to database.
+
 ## [0.0.4]
 
 - Added ping google.
