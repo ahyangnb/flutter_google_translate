@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_google_translate/src/util/translate_util.dart';
+import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:flutter_google_translate/src/models/translation_model.dart';
 import 'package:html_unescape/html_unescape.dart';
@@ -9,7 +11,7 @@ import 'package:http/http.dart';
 
 export 'package:flutter_google_translate/src/models/translation_model.dart';
 
-class Translation {
+class Translation extends TranslateUtil {
   /// The Google cloud translation token associated with your project.
   /// create it here https://console.cloud.google.com/apis/api/translate.googleapis.com/credentials
   final String _apiKey;
@@ -25,6 +27,7 @@ class Translation {
   static const String _detectPath = '/detect';
 
   /// Returns the value of the token in google.
+  @override
   String get apiKey => _apiKey;
 
   /// If this is not null, any error will be sent to this function, otherwise `debugPrint` will be used.
@@ -45,9 +48,9 @@ class Translation {
   /// Sends a request to translate.
   /// [text] text to translate.
   /// [to] to what language translate.
-  Future<TranslationModel> translate(
-      {required String text, required String to}) async {
-    return _translateText(text: text, to: to);
+  Future<TranslationModel> translate({required String text, String? to}) async {
+    return _translateText(
+        text: text, to: to ?? Get.locale?.languageCode ?? 'en');
   }
 
   /// Detects source lang.
