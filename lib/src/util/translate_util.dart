@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_compose_ui_modifiers/flutter_compose_ui_modifiers.dart';
 import 'package:flutter_google_translate/flutter_google_translate.dart';
 import 'package:get/get.dart';
@@ -19,7 +20,6 @@ class TranslateException implements Exception {
     return 'TranslateException{message: $message}';
   }
 }
-
 
 /// Use demo:
 /// ```
@@ -54,13 +54,19 @@ class TranslateUtil extends TranslateDataManage {
   late Translation _translation;
 
   TranslationModel _translated =
-  TranslationModel(translatedText: '', detectedSourceLanguage: '');
+      TranslationModel(translatedText: '', detectedSourceLanguage: '');
   TranslationModel _detected =
-  TranslationModel(translatedText: '', detectedSourceLanguage: '');
+      TranslationModel(translatedText: '', detectedSourceLanguage: '');
 
   Future translateText(String text, int messageId, {String? to}) async {
     if (GetUtils.isNullOrBlank(apiKey)!) {
       throw TranslateException('Config error');
+    }
+
+    final List<ConnectivityResult> connectivityResult =
+        await (Connectivity().checkConnectivity());
+    if (connectivityResult.contains(ConnectivityResult.none)) {
+      throw TranslateException('Please enable network.');
     }
 
     setTranslating(messageId);
@@ -73,18 +79,17 @@ class TranslateUtil extends TranslateDataManage {
       String targetLanguage = to ?? Get.locale?.languageCode ?? 'en';
       try {
         _translated =
-        await _translation.translate(text: text, to: targetLanguage);
+            await _translation.translate(text: text, to: targetLanguage);
       } on Exception catch (e, s) {
         gLogger.e(
           'request translate error::${e.toString()}\n'
-              '${s.toString()}',
+          '${s.toString()}',
         );
         throw TranslateException('Google connect error.');
       }
       _detected = await _translation.detectLang(text: text);
       gLogger.d(
-          '_translated::${_translated.translatedText}, _detected :${_detected
-              .detectedSourceLanguage} ');
+          '_translated::${_translated.translatedText}, _detected :${_detected.detectedSourceLanguage} ');
       setOk(
         originContent: text,
         result: _translated.translatedText,
