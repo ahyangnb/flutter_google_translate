@@ -28,7 +28,7 @@ class TranslateException implements Exception {
 //   late Translation _translation;
 //   static SelfTranslateUtil? _instance;
 //
-//   static get translation => instance._translation;
+//   static Translation get translation => instance._translation;
 //
 //   SelfTranslateUtil._privateConstructor() {
 //     final gltKey = ""; // Get your google translate key.
@@ -40,7 +40,7 @@ class TranslateException implements Exception {
 //
 //   Future translateText(String text, int messageId) async {
 //     try {
-//       await _translation.translateText(text, messageId);
+//       await _translation.translateWithCache(text, messageId);
 //     } on TranslateException catch (e) {
 //       showCustomToast(e.message);
 //     }
