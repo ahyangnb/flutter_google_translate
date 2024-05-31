@@ -115,7 +115,7 @@ class TranslateDataManage {
   RxMap<String, Map<String, String>> translateResult =
       <String, Map<String, String>>{}.obs;
 
-  TranslateStatus translating(int messageId) {
+  TranslateStatus status(int messageId) {
     return translatingMap.containsKey(messageId)
         ? translatingMap[messageId]!
         : TranslateStatus.none;
