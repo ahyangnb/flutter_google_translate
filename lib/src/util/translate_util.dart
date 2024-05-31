@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_compose_ui_modifiers/flutter_compose_ui_modifiers.dart';
 import 'package:flutter_google_translate/flutter_google_translate.dart';
+import 'package:flutter_google_translate/src/db/db_translate_util.dart';
+import 'package:flutter_google_translate/src/util/ping.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
@@ -58,7 +59,20 @@ class TranslateUtil extends TranslateDataManage {
   TranslationModel _detected =
       TranslationModel(translatedText: '', detectedSourceLanguage: '');
 
-  Future translateText(String text, int messageId, {String? to}) async {
+  Future translateWithCache(String text, int messageId, {String? to}) async {
+    String targetLanguage = to ?? Get.locale?.languageCode ?? 'en';
+    TranslateItem? translateItem =
+        await DbTranslateUtil.instance().getData(text, targetLanguage);
+    if (translateItem != null) {
+      setOk(
+        originContent: text,
+        result: translateItem.resultContent,
+        targetLanguage: targetLanguage,
+        messageId: messageId,
+      );
+      return;
+    }
+
     if (GetUtils.isNullOrBlank(apiKey)!) {
       throw TranslateException('Config error');
     }
@@ -71,12 +85,11 @@ class TranslateUtil extends TranslateDataManage {
 
     setTranslating(messageId);
     try {
-      if ((await MPingGoogleUtil.pingGoogle()).not()) {
+      if (!(await PingGoogleUtil.pingGoogle())) {
         throw TranslateException('Google can not connect.');
       }
 
       _translation = Translation(apiKey: apiKey);
-      String targetLanguage = to ?? Get.locale?.languageCode ?? 'en';
       try {
         _translated =
             await _translation.translate(text: text, to: targetLanguage);
@@ -145,12 +158,12 @@ class TranslateDataManage {
   }
 
   String? get(String textMessage, {String? to}) {
-    if (translateResult.containsKey(textMessage).not()) {
+    if (!translateResult.containsKey(textMessage)) {
       return null;
     }
     final textMapResult = translateResult[textMessage]!;
     String targetLanguage = to ?? Get.locale?.languageCode ?? 'en';
-    if (textMapResult.containsKey(targetLanguage).not()) {
+    if (!textMapResult.containsKey(targetLanguage)) {
       return null;
     }
     return textMapResult[targetLanguage];

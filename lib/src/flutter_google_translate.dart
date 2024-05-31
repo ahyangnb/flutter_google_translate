@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_google_translate/src/models/translation_model.dart';
 import 'package:flutter_google_translate/src/util/translate_util.dart';
 import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
-import 'package:flutter_google_translate/src/models/translation_model.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart';
 
