@@ -25,6 +25,7 @@ class DbTranslateUtil {
     return (db.select(db.translateItems)
           ..where((t) => t.originContent.equals(originContent))
           ..where((t) => t.targetLanguage.equals(targetLanguage)))
-        .getSingleOrNull();
+        .get()
+        .then((value) => value.isNotEmpty ? value.first : null);
   }
 }
