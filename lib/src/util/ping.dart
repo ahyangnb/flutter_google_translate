@@ -24,7 +24,7 @@ class PingGoogleUtil {
     pingStream = ping.stream.listen((event) async {
       try {
         gLogger.d("ping::$event, error:${event.error?.error}");
-        if (event.summary?.received == null || event.summary!.received == 0) {
+        if (event.summary?.received != null && event.summary!.received == 0) {
           completer.complete(false);
           return;
         }
@@ -49,7 +49,9 @@ class PingGoogleUtil {
   }
 
   static void cancelPing() {
-    pingStream?.cancel();
-    pingStream = null;
+    if (pingStream != null) {
+      if (!pingStream!.isPaused) pingStream?.cancel();
+      pingStream = null;
+    }
   }
 }

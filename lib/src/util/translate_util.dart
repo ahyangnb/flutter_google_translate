@@ -122,7 +122,7 @@ class TranslateUtil extends TranslateDataManage {
         messageId: messageId,
       );
     } on Exception catch (e, s) {
-      gLogger.e('GoogleTranslate::error::$e\n$s');
+      if (e is! TranslateException) gLogger.e('GoogleTranslate::error::$e\n$s');
       setError(messageId);
       rethrow;
     }
