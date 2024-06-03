@@ -87,7 +87,9 @@ class TranslateUtil extends TranslateDataManage {
 
     setTranslating(messageId);
     try {
-      if (!(await PingGoogleUtil.pingGoogle())) {
+      final pingResult = await PingGoogleUtil.pingGoogle();
+      gLogger.d("pingResult::$pingResult");
+      if (!pingResult) {
         throw TranslateException('Google can not connect.');
       }
 
@@ -120,7 +122,7 @@ class TranslateUtil extends TranslateDataManage {
         messageId: messageId,
       );
     } on Exception catch (e, s) {
-      gLogger.e('$e\n$s');
+      gLogger.e('GoogleTranslate::error::$e\n$s');
       setError(messageId);
       rethrow;
     }

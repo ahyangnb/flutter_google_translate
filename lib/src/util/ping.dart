@@ -12,7 +12,7 @@ class PingGoogleUtil {
   }
 
   static Future<bool> ping(String url) async {
-    int count = 2;
+    int count = 1;
     // Begin ping process and listen for output
     // Register DartPingIOS
     DartPingIOS.register();
@@ -22,18 +22,27 @@ class PingGoogleUtil {
     Completer<bool> completer = Completer<bool>();
     List<PingData> detectList = [];
     pingStream = ping.stream.listen((event) async {
-      gLogger.d("ping::$event, error:${event.error?.error}");
-      detectList.add(event);
-      if (detectList.length == count) {
-        await ping.stop();
+      try {
+        gLogger.d("ping::$event, error:${event.error?.error}");
+        if (event.summary?.received == null || event.summary!.received == 0) {
+          completer.complete(false);
+          return;
+        }
+        detectList.add(event);
+        if (detectList.length == count) {
+          await ping.stop();
 
-        /// End the ping event.
-        cancelPing();
-        final errorList =
-            detectList.where((element) => element.error != null).toList();
-        completer.complete(errorList.length < count);
+          /// End the ping event.
+          cancelPing();
+          final errorList =
+              detectList.where((element) => element.error != null).toList();
+          completer.complete(errorList.length < count);
+        }
+        // event.response.
+      } catch (e) {
+        completer.complete(false);
+        gLogger.d("ping::error::${e.toString()}");
       }
-      // event.response.
     });
     // Google can not connect.
     return completer.future;
