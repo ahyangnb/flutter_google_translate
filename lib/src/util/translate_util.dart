@@ -59,7 +59,7 @@ class TranslateUtil extends TranslateDataManage {
   TranslationModel _detected =
       TranslationModel(translatedText: '', detectedSourceLanguage: '');
 
-  Future<String?> translateWithCache(String text, int messageId,
+  Future<String?> translateWithCache(String text, String messageId,
       {String? to, bool cache = true}) async {
     String targetLanguage = to ?? Get.locale?.languageCode ?? 'en';
     if (cache) {
@@ -138,7 +138,7 @@ enum TranslateStatus {
 
 class TranslateDataManage {
   /// The key is message ID.
-  RxMap<int, TranslateStatus> translatingMap = <int, TranslateStatus>{}.obs;
+  RxMap<String, TranslateStatus> translatingMap = <String, TranslateStatus>{}.obs;
 
   /// The key is origin content.
   /// and the value is the translated content with language.
@@ -151,7 +151,7 @@ class TranslateDataManage {
         : TranslateStatus.none;
   }
 
-  void setTranslating(int messageId) {
+  void setTranslating(String messageId) {
     translatingMap[messageId] = TranslateStatus.translating;
   }
 
@@ -159,14 +159,14 @@ class TranslateDataManage {
     required String originContent,
     required String result,
     required String targetLanguage,
-    required int messageId,
+    required String messageId,
   }) {
     translateResult[originContent] = {targetLanguage: result};
     translatingMap[messageId] = TranslateStatus.translated;
     return result;
   }
 
-  void setError(int messageId) {
+  void setError(String messageId) {
     translatingMap[messageId] = TranslateStatus.error;
   }
 
