@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_google_translate/src/models/translation_model.dart';
@@ -50,7 +51,7 @@ class Translation extends TranslateUtil {
   /// [to] to what language translate.
   Future<TranslationModel> translate({required String text, String? to}) async {
     return _translateText(
-        text: text, to: to ?? Get.locale?.languageCode ?? 'en');
+        text: text, to: to ?? Get.locale?.languageCode ?? Platform.localeName);
   }
 
   /// Detects source lang.

@@ -1,8 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_google_translate/flutter_google_translate.dart';
-import 'package:flutter_google_translate/src/db/db_translate_util.dart';
 import 'package:flutter_google_translate/src/util/ping.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -61,7 +61,8 @@ class TranslateUtil extends TranslateDataManage {
 
   Future<String?> translateWithCache(String text, String messageId,
       {String? to, bool cache = true}) async {
-    String targetLanguage = to ?? Get.locale?.languageCode ?? 'en';
+    String targetLanguage =
+        to ?? Get.locale?.languageCode ?? Platform.localeName;
     if (cache) {
       TranslateItem? translateItem =
           await DbTranslateUtil.instance().getData(text, targetLanguage);
@@ -177,7 +178,8 @@ class TranslateDataManage {
       return textMessage;
     }
     final textMapResult = translateResult[textMessage]!;
-    String targetLanguage = to ?? Get.locale?.languageCode ?? 'en';
+    String targetLanguage =
+        to ?? Get.locale?.languageCode ?? Platform.localeName;
     if (!textMapResult.containsKey(targetLanguage)) {
       return textMessage;
     }
