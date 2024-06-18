@@ -138,7 +138,8 @@ enum TranslateStatus {
 
 class TranslateDataManage {
   /// The key is message ID.
-  RxMap<String, TranslateStatus> translatingMap = <String, TranslateStatus>{}.obs;
+  RxMap<String, TranslateStatus> translatingMap =
+      <String, TranslateStatus>{}.obs;
 
   /// The key is origin content.
   /// and the value is the translated content with language.
@@ -170,15 +171,16 @@ class TranslateDataManage {
     translatingMap[messageId] = TranslateStatus.error;
   }
 
-  String? get(String textMessage, {String? to}) {
+  /// Get translate result, if not contain will return the origin content.
+  String get(String textMessage, {String? to}) {
     if (!translateResult.containsKey(textMessage)) {
-      return null;
+      return textMessage;
     }
     final textMapResult = translateResult[textMessage]!;
     String targetLanguage = to ?? Get.locale?.languageCode ?? 'en';
     if (!textMapResult.containsKey(targetLanguage)) {
-      return null;
+      return textMessage;
     }
-    return textMapResult[targetLanguage];
+    return textMapResult[targetLanguage]!;
   }
 }
