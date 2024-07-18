@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_google_translate/src/models/translation_model.dart';
 import 'package:flutter_google_translate/src/util/translate_util.dart';
 import 'package:get/get.dart';
@@ -50,8 +51,7 @@ class Translation extends TranslateUtil {
   /// [text] text to translate.
   /// [to] to what language translate.
   Future<TranslationModel> translate({required String text, String? to}) async {
-    return _translateText(
-        text: text, to: to ?? Get.locale?.languageCode ?? Platform.localeName);
+    return _translateText(text: text, to: to ?? getDefLocaleStr());
   }
 
   /// Detects source lang.
@@ -120,5 +120,17 @@ class Translation extends TranslateUtil {
       _onErrorHandler('${response.statusCode}', response.body);
       throw Exception();
     }
+  }
+}
+
+String getDefLocaleStr() {
+  return Get.locale?.localeToStrOrNull ?? Platform.localeName;
+}
+
+extension LocaleExtentsion on Locale? {
+  String? get localeToStrOrNull {
+    if (this == null) return null;
+    final String? countryCode = this?.countryCode;
+    return '${this?.languageCode}${GetUtils.isNullOrBlank(countryCode)! ? '' : '_$countryCode'}';
   }
 }

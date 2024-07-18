@@ -61,8 +61,7 @@ class TranslateUtil extends TranslateDataManage {
 
   Future<String?> translateWithCache(String text, String messageId,
       {String? to, bool cache = true}) async {
-    String targetLanguage =
-        to ?? Get.locale?.languageCode ?? Platform.localeName;
+    String targetLanguage = to ?? getDefLocaleStr();
     if (cache) {
       TranslateItem? translateItem =
           await DbTranslateUtil.instance().getData(text, targetLanguage);
@@ -178,8 +177,7 @@ class TranslateDataManage {
       return textMessage;
     }
     final textMapResult = translateResult[textMessage]!;
-    String targetLanguage =
-        to ?? Get.locale?.languageCode ?? Platform.localeName;
+    String targetLanguage = to ?? getDefLocaleStr();
     if (!textMapResult.containsKey(targetLanguage)) {
       return textMessage;
     }
