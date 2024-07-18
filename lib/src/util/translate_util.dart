@@ -152,6 +152,11 @@ class TranslateDataManage {
         : TranslateStatus.none;
   }
 
+  /// Please call this after change language.
+  void clear() {
+    translatingMap.clear();
+  }
+
   void setTranslating(String messageId) {
     translatingMap[messageId] = TranslateStatus.translating;
   }
