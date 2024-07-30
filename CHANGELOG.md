@@ -1,3 +1,7 @@
+## [0.1.1]
+
+- optimize the translate.
+
 ## [0.1.0]
 
 - fix: containUnderLine.
