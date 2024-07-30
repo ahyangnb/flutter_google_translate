@@ -130,7 +130,9 @@ String getDefLocaleStr() {
 extension LocaleExtentsion on Locale? {
   String? get localeToStrOrNull {
     if (this == null) return null;
-    final String? countryCode = this?.countryCode;
-    return '${this?.languageCode}${GetUtils.isNullOrBlank(countryCode)! ? '' : '_$countryCode'}';
+    final String? countryCode = this!.countryCode;
+    final containUnderLine =
+        this!.languageCode.contains("_") || countryCode!.contains("_");
+    return '${this!.languageCode}${GetUtils.isNullOrBlank(countryCode)! ? '' : '${containUnderLine ? "" : "_"}$countryCode'}';
   }
 }
