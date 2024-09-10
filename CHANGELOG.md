@@ -1,3 +1,8 @@
+## [0.1.3]
+
+- remove request detectLang when only translate text. 
+ 
+
 ## [0.1.2]
 
 - fix the model wrong when many times translating in same time. 
