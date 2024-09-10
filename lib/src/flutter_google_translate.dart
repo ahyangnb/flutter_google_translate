@@ -83,10 +83,11 @@ class Translation extends TranslateUtil {
         final body = json.decode(response.body);
         final translations = body['data']['translations'] as List;
         final translation = translations.first;
-        return TranslationModel(
+        final model = TranslationModel(
           translatedText: HtmlUnescape().convert(translation['translatedText']),
           detectedSourceLanguage: translation['detectedSourceLanguage'],
         );
+        return model;
       } on Exception catch (e) {
         _onErrorHandler('error parsing answer', e.toString());
         throw Exception();
