@@ -92,8 +92,6 @@ class TranslateUtil extends TranslateDataManage {
       /// The model can't declaration on class because will be change by next word.
       TranslationModel _translated =
           TranslationModel(translatedText: '', detectedSourceLanguage: '');
-      TranslationModel _detected =
-          TranslationModel(translatedText: '', detectedSourceLanguage: '');
 
       try {
         _translated =
@@ -105,9 +103,8 @@ class TranslateUtil extends TranslateDataManage {
         );
         throw TranslateException('Google connect error.');
       }
-      _detected = await _translation!.detectLang(text: text);
       gLogger.d(
-          '_translated::${_translated.translatedText}, origin is $text,  _detected :${_detected.detectedSourceLanguage} ');
+          '_translated::${_translated.translatedText}, origin is $text,  detectedSourceLanguage :${_translated.detectedSourceLanguage} ');
 
       /// Insert Data.
       await DbTranslateUtil.instance().insertData(
