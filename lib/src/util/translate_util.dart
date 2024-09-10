@@ -51,12 +51,7 @@ class TranslateUtil extends TranslateDataManage {
     return '';
   }
 
-  late Translation _translation;
-
-  TranslationModel _translated =
-      TranslationModel(translatedText: '', detectedSourceLanguage: '');
-  TranslationModel _detected =
-      TranslationModel(translatedText: '', detectedSourceLanguage: '');
+  Translation? _translation;
 
   Future<String?> translateWithCache(String text, String messageId,
       {String? to, bool cache = true}) async {
@@ -92,10 +87,15 @@ class TranslateUtil extends TranslateDataManage {
         throw TranslateException('Google can not connect.');
       }
 
-      _translation = Translation(apiKey: apiKey);
+      _translation ??= Translation(apiKey: apiKey);
+
+      /// The model can't declaration on class because will be change by next word.
+      TranslationModel _translated =
+          TranslationModel(translatedText: '', detectedSourceLanguage: '');
+
       try {
         _translated =
-            await _translation.translate(text: text, to: targetLanguage);
+            await _translation!.translate(text: text, to: targetLanguage);
       } on Exception catch (e, s) {
         gLogger.e(
           'request translate error::${e.toString()}\n'
@@ -103,9 +103,8 @@ class TranslateUtil extends TranslateDataManage {
         );
         throw TranslateException('Google connect error.');
       }
-      _detected = await _translation.detectLang(text: text);
       gLogger.d(
-          '_translated::${_translated.translatedText}, origin is $text,  _detected :${_detected.detectedSourceLanguage} ');
+          '_translated::${_translated.translatedText}, origin is $text,  detectedSourceLanguage :${_translated.detectedSourceLanguage} ');
 
       /// Insert Data.
       await DbTranslateUtil.instance().insertData(

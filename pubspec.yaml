@@ -1,6 +1,6 @@
 name: flutter_google_translate
 description: Flutter API for google cloud translation - translate to given language, it can be store data and get result form last time.
-version: 0.1.1
+version: 0.1.3
 homepage: https://github.com/ahyangnb/flutter_google_translate
 
 environment:
