@@ -105,7 +105,7 @@ class TranslateUtil extends TranslateDataManage {
       }
       _detected = await _translation.detectLang(text: text);
       gLogger.d(
-          '_translated::${_translated.translatedText}, _detected :${_detected.detectedSourceLanguage} ');
+          '_translated::${_translated.translatedText}, origin is $text,  _detected :${_detected.detectedSourceLanguage} ');
 
       /// Insert Data.
       await DbTranslateUtil.instance().insertData(
